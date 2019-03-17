@@ -5,9 +5,9 @@
     <modules>
         <module>cloud-eureka</module>
         <module>cloud-zuul</module>
-        <module>service/example-service-01</module>
-        <module>service/example-service-02</module>
         <module>cloud-config</module>
+        <module>service/service-producer</module>
+        <module>service/service-consumer</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -17,7 +17,7 @@
     </parent>
     <groupId>com.iogogogo</groupId>
     <artifactId>life-cloud-example</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>life-cloud-example</name>
     <packaging>pom</packaging>
     <description>life-cloud-example project for Spring Boot</description>
