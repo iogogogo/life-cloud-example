@@ -94,9 +94,136 @@ public class ConfigApplication {
 
 #### 测试
 
+浏览器访问
+
+```html
+http://localhost:8899/life-example-producer/dev
+http://localhost:8899/life-example-producer/test
+http://localhost:8899/life-example-producer/pro
+```
+
+分别会按照我们的配置返回相应的数据，格式如下
+
+```json
+// 20190317102625
+// http://localhost:8899/life-example-producer/dev
+
+{
+  "name": "life-example-producer",
+  "profiles": [
+    "dev"
+  ],
+  "label": null,
+  "version": "131d288174b48601af4461dfde809913c87b91ca",
+  "state": null,
+  "propertySources": [
+    {
+      "name": "https://gitlab.eoitek.net/zengtao/life-cloud-example.git/cloud-conf-repo/life-example-producer-dev.properties",
+      "source": {
+        "sharplook.instance": "sharplook-dev"
+      }
+    }
+  ]
+}
+```
+
+仓库中的配置文件会被转换成web接口，访问可以参照以下的规则：
+
+- /{application}/{profile}[/{label}]
+- /{application}-{profile}.yml
+- /{label}/{application}-{profile}.yml
+- /{application}-{profile}.properties
+- /{label}/{application}-{profile}.properties
+
 
 
 ### Client配置
+
+client 主要是其他服务怎么去获取config中的配置信息，还是以service-producer为例
+
+#### pom 配置
+
+```xml
+<!-- 添加config客户端依赖 -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+```
+
+#### 属性文件配置
+
+application.properties无需修改，新建bootstrap.properties文件，用于配置spring cloud config的服务器信息
+
+```properties
+# 配置中心地址
+spring.cloud.config.uri=http://localhost:8899/
+# 使用哪个环境的配置
+spring.cloud.config.profile=dev
+# 当前服务的名称 和 spring.application.name对应即可
+spring.cloud.config.name=${spring.application.name}
+# 读取指定分支配置
+spring.cloud.config.label=master
+```
+
+> 上面这些与spring-cloud相关的属性必须配置在bootstrap.properties中，config部分内容才能被正确加载。因为config的相关配置会先于application.properties，而bootstrap.properties的加载也是先于application.properties。
+
+#### 启动类
+
+- 无需变更
+
+#### Controller
+
+为了方便测试，还是使用接口访问形式，新建ConfigApi
+
+```java
+package com.iogogogo.producer.api;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Created by tao.zeng on 2019-03-17.
+ */
+@RestController
+@RequestMapping("/api/config")
+public class ConfigApi {
+
+    /**
+     * 这里key 就是自定义在配置中心中的key
+     */
+    @Value("${sharplook.instance}")
+    private String instance;
+
+    @GetMapping("/")
+    public String config() {
+        return instance;
+    }
+}
+
+```
+
+
+
+#### 测试
+
+启动service-producer服务，访问
+
+```
+http://localhost:8080/api/config/
+```
+
+返回
+
+```
+sharplook-dev
+```
+
+- 修改`spring.cloud.config.profile=pro`配置，重启服务后，访问接口，返现返回结果就是我们在config中的配置
+
+- 修改配置中心的git中的配置，推送到git以后，再次请求服务，就能看到新的变更配置。
 
 
 
@@ -104,7 +231,7 @@ public class ConfigApplication {
 
 1. 配置中心是微服务基础架构中不可或缺的核心组件，现代微服务架构和云原生环境，对应用配置管理提出了更高的要求。
 2. 配置中心有众多的应用场景，配置中心+功能开关是DevOps最佳实践。用好配置中心，它能帮助技术组织实现持续交付和DevOps文化转型。
-3. 目前来看携程开源的[Apollo](https://github.com/ctripcorp/apollo)配置中心，企业级功能完善，经过大规模生产验证，社区活跃度高，是开源配置中心产品的首选。
+3. Spring Cloud Config相对来说还是达不到生产级别，目前来看携程开源的[Apollo](https://github.com/ctripcorp/apollo)配置中心，企业级功能完善，经过大规模生产验证，社区活跃度高，是开源配置中心产品的首选。
 
 
 
