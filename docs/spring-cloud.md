@@ -193,7 +193,7 @@ Spring Cloud对于中小型互联网公司来说是一种福音，因为这类�
 
 ## Spring Cloud基础组件架构
 
-![img](images/spring-cloud-framework.jpg)
+![img](./images/spring-cloud-framework.jpg)
 
 
 
@@ -217,19 +217,19 @@ Eureka是Netflix开源的一款提供服务注册和发现的产品，它提供�
 
 正常调用项目A请求项目B
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-ab.jpg)
+![img](./images/eureka/eureka-ab.jpg)
 
 有了服务中心之后，任何一个服务都不能直接去掉用，都需要通过服务中心来调用
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-a2b.jpg)
+![img](./images/eureka/eureka-a2b.jpg)
 
 项目A调用项目B，项目B在调用项目C
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-abc.jpg)
+![img](./images/eureka/eureka-abc.jpg)
 
 这时候调用的步骤就会为两步：第一步，项目A首先从服务中心请求项目B服务器，然后项目B在从服务中心请求项目C服务。
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-a2b2c.jpg)
+![img](./images/eureka/eureka-a2b2c.jpg)
 
 上面的项目只是两三个相互之间的简单调用，但是如果项目超过20个30个呢，比如目前itoa组件大概有8个服务，
 项目之间很多地方相互调用，任何其中的一个项目改动，就会牵连好几个项目跟着重启，巨麻烦而且容易出错。通过服务中心来获取服务你不需要关注你调用的项目IP地址，由几台服务器组成，每次直接去服务中心获取可以使用的服务去调用既可。
@@ -272,7 +272,7 @@ Eureka由两个组件组成：Eureka服务器和Eureka客户端。Eureka服务�
 
 用一张图来认识以下：
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-architecture-overview.png)
+![img](./images/eureka/eureka-architecture-overview.png)
 
 上图简要描述了Eureka的基本架构，由3个角色组成：
 
@@ -359,7 +359,7 @@ eureka.client.fetch-registry=false
 eureka.client.service-url.defaultZone=http://${eureka.instance.hostname}:${server.port}/eureka/
 ```
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-instance.png)
+![img](./images/eureka/eureka-instance.png)
 
 ### eureka集群使用
 
@@ -454,7 +454,7 @@ java -jar cloud-eureka-0.0.1.jar --spring.profiles.active=peer3
 
 启动完成后，浏览器输入：http://localhost:8762/ 效果图如下：
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/eureka/eureka-cluster.png)
+![img](./images/eureka/eureka-cluster.png)
 
 可以在peer2中看到了peer1、peer3的相关信息。至此eureka集群也已经完成了
 
@@ -578,7 +578,7 @@ public class IndexApi {
 
 添加@EnableEurekaClient注解后，项目就具有了服务注册的功能。启动工程后，就可以在注册中心的页面看到service-producer服务。
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/fegin-hystrix/fegin-producer.png)
+![img](./images/fegin-hystrix/fegin-producer.png)
 
 到此服务提供者配置就完成了。
 
@@ -730,7 +730,7 @@ public class IndexApi {
 
 依次启动cloud-eureka、service-producer、service-consumer三个项目，并且查看eureka注册情况
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/fegin-hystrix/fegin-eureka.png)
+![img](./images/fegin-hystrix/fegin-eureka.png)
 
 
 
@@ -788,7 +788,7 @@ java -jar service-producer-0.0.1.jar --server.port=8082 --service.instance.name=
 
 启动完成后，会看到eureka中有多个服务提供者
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/fegin-hystrix/fegin-muilt-producer.png)
+![img](./images/fegin-hystrix/fegin-muilt-producer.png)
 
 
 
@@ -836,7 +836,7 @@ http://localhost:8081/api/consumer/index?name=小花脸
 
 如果下图所示：A作为服务提供者，B为A的服务消费者，C和D是B的服务消费者。A不可用引起了B的不可用，并将不可用像滚雪球一样放大到C和D时，雪崩效应就形成了。
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/fegin-hystrix/hystrix-1.png)
+![img](./images/fegin-hystrix/hystrix-1.png)
 
 #### 熔断器（CircuitBreaker）
 
@@ -844,7 +844,7 @@ http://localhost:8081/api/consumer/index?name=小花脸
 
 熔断器模式就像是那些容易导致错误的操作的一种代理。这种代理能够记录最近调用发生错误的次数，然后决定使用允许操作继续，或者立即返回错误。 熔断器开关相互转换的逻辑如下图：
 
-![img](/Users/tao.zeng/share/life-cloud-example/docs/images/fegin-hystrix/hystrix-2.png)
+![img](./images/fegin-hystrix/hystrix-2.png)
 
 熔断器就是保护服务高可用的最后一道防线。
 
